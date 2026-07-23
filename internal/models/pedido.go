@@ -2,13 +2,17 @@ package models
 
 import "gorm.io/gorm"
 
-// TAREA (CP1): Complete los campos de Pedido según lo que muestran las pantallas.
-//
-// Pistas de trabajo:
-//   - Un Pedido referencia a un Producto y a un Cliente (claves foráneas).
-//   - Recuerde el campo de estado (use las constantes de estados.go) y el total.
-//   - Los tests de acceptance/ compilan contra los nombres EXACTOS de los campos.
+// Pedido registra la compra de un producto realizada por un cliente.
 type Pedido struct {
 	gorm.Model
-	// TODO: agregue aquí los campos.
+
+	ProductoID uint     `gorm:"not null;index" json:"producto_id"`
+	Producto   Producto `gorm:"foreignKey:ProductoID;constraint:OnUpdate:CASCADE,OnDelete:RESTRICT;" json:"producto"`
+
+	ClienteID uint    `gorm:"not null;index" json:"cliente_id"`
+	Cliente   Cliente `gorm:"foreignKey:ClienteID;constraint:OnUpdate:CASCADE,OnDelete:RESTRICT;" json:"cliente"`
+
+	Cantidad uint    `gorm:"not null" json:"cantidad"`
+	Estado   string  `gorm:"size:20;not null;default:PENDIENTE" json:"estado"`
+	Total    float64 `gorm:"not null" json:"total"`
 }

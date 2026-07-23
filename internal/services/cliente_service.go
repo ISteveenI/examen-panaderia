@@ -1,17 +1,13 @@
 package services
 
 import (
+	"strings"
+
 	"github.com/joancema/examen-panaderia/internal/models"
 	"github.com/joancema/examen-panaderia/internal/storage"
 )
 
-// TAREA (CP1): Implemente ClienteService.
-//
-// Reglas:
-//   - NO cambie el nombre del tipo, del constructor ni las firmas de los métodos.
-//   - Cliente no tiene reglas de negocio complejas: valide lo evidente según
-//     las pantallas (campos obligatorios -> ErrDatosInvalidos) y delegue al
-//     repository. Guíese por ProductoService.
+// ClienteService contiene las validaciones básicas de Cliente.
 type ClienteService struct {
 	repo storage.ClienteRepository
 }
@@ -21,16 +17,25 @@ func NuevoClienteService(repo storage.ClienteRepository) *ClienteService {
 }
 
 func (s *ClienteService) Crear(c *models.Cliente) error {
-	// TODO: implementar.
-	return ErrNoImplementado
+	if c == nil ||
+		strings.TrimSpace(c.Nombre) == "" ||
+		strings.TrimSpace(c.Cedula) == "" ||
+		strings.TrimSpace(c.Telefono) == "" {
+		return ErrDatosInvalidos
+	}
+
+	return s.repo.Crear(c)
 }
 
 func (s *ClienteService) ObtenerPorID(id uint) (models.Cliente, error) {
-	// TODO: implementar.
-	return models.Cliente{}, ErrNoImplementado
+	cliente, encontrado := s.repo.ObtenerPorID(id)
+	if !encontrado {
+		return models.Cliente{}, ErrNoEncontrado
+	}
+
+	return cliente, nil
 }
 
 func (s *ClienteService) Listar() ([]models.Cliente, error) {
-	// TODO: implementar.
-	return nil, ErrNoImplementado
+	return s.repo.Listar()
 }
