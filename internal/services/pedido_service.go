@@ -50,7 +50,7 @@ func (s *PedidoService) Crear(a *models.Pedido) error {
 	// R3: cantidad por precio unitario.
 	a.Total = float64(a.Cantidad) * producto.PrecioUnitario
 
-	// R3: descuento del 10 % desde 5 unidades.
+	// R4:descuento del 10 % desde 5 unidades.
 	if a.Cantidad >= 5 {
 		a.Total = a.Total * 0.90
 	}
