@@ -1,19 +1,12 @@
 package storage
 
 import (
-	"errors"
-
 	"gorm.io/gorm"
 
 	"github.com/joancema/examen-panaderia/internal/models"
 )
 
-// TAREA (CP2): Implemente PedidoGORM contra la interfaz PedidoRepository.
-//
-// Reglas:
-//   - NO cambie el nombre del tipo, del constructor ni las firmas de los métodos.
-//   - Guíese por ProductoGORM: es el mismo patrón con una entidad distinta.
-//   - Recuerde: aquí NO va lógica de negocio. Solo persistencia.
+// PedidoGORM implementa PedidoRepository mediante GORM.
 type PedidoGORM struct {
 	db *gorm.DB
 }
@@ -23,21 +16,35 @@ func NuevoPedidoGORM(db *gorm.DB) *PedidoGORM {
 }
 
 func (r *PedidoGORM) Crear(a *models.Pedido) error {
-	// TODO: implementar.
-	return errors.New("TODO: implementar Crear")
+	return r.db.Create(a).Error
 }
 
 func (r *PedidoGORM) ObtenerPorID(id uint) (models.Pedido, bool) {
-	// TODO: implementar.
-	return models.Pedido{}, false
+	var pedido models.Pedido
+
+	err := r.db.
+		Preload("Producto").
+		Preload("Cliente").
+		First(&pedido, id).Error
+
+	if err != nil {
+		return models.Pedido{}, false
+	}
+
+	return pedido, true
 }
 
 func (r *PedidoGORM) Listar() ([]models.Pedido, error) {
-	// TODO: implementar.
-	return nil, errors.New("TODO: implementar Listar")
+	var lista []models.Pedido
+
+	err := r.db.
+		Preload("Producto").
+		Preload("Cliente").
+		Find(&lista).Error
+
+	return lista, err
 }
 
 func (r *PedidoGORM) Actualizar(a *models.Pedido) error {
-	// TODO: implementar.
-	return errors.New("TODO: implementar Actualizar")
+	return r.db.Save(a).Error
 }
